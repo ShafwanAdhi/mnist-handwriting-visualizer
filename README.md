@@ -5,7 +5,7 @@
 [![FastAPI](https://img.shields.io/badge/backend-FastAPI-009688)](https://fastapi.tiangolo.com/)
 [![TorchScript](https://img.shields.io/badge/model-TorchScript-EE4C2C)](https://pytorch.org/docs/stable/jit.html)
 
-> **Interactive web application for real-time handwritten digit recognition with live CNN feature map visualization**
+> **Interactive web application for real-time handwritten digit recognition with CNN feature map visualization**
 
 - [Live Demo](https://shafwanadhi.github.io/mnist-handwriting-visualizer/)
 - [API Repository](https://github.com/ShafwanAdhi/mnist-cnn-torchscript-inference-api.git)
