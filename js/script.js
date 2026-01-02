@@ -2,7 +2,6 @@
 const API_URL =
 "https://mnist-cnn-torchscript-inference-api-production.up.railway.app";
 
-// ========== CANVAS SETUP ==========
 const gridCanvas = document.getElementById("gridCanvas");
 const drawCanvas = document.getElementById("drawCanvas");
 const gridCtx = gridCanvas.getContext("2d");
@@ -10,7 +9,6 @@ const drawCtx = drawCanvas.getContext("2d");
 const clearBtn = document.getElementById("clearBtn");
 const predictBtn = document.getElementById("predictBtn");
 
-// Draw 28x28 grid with clear cell boundaries
 function drawGrid() {
 gridCtx.clearRect(0, 0, 280, 280);
 
@@ -18,15 +16,12 @@ gridCtx.clearRect(0, 0, 280, 280);
 gridCtx.fillStyle = "#000";
 gridCtx.fillRect(0, 0, 280, 280);
 
-// Grid lines
 gridCtx.strokeStyle = "#1a1a1a";
 gridCtx.lineWidth = 1;
 
-// Draw vertical and horizontal lines
 for (let i = 0; i <= 28; i++) {
     const pos = i * 10;
 
-    // Make every 7th line slightly brighter for better orientation
     if (i % 7 === 0) {
     gridCtx.strokeStyle = "#2a2a2a";
     } else {
@@ -49,25 +44,23 @@ for (let i = 0; i <= 28; i++) {
 
 drawGrid();
 
-// Initialize drawing canvas with transparent background
+// Initialize drawing canvas 
 drawCtx.clearRect(0, 0, 280, 280);
 
 let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
 
-// Pixel-based drawing array (28x28)
 let pixelData = Array(28)
 .fill(null)
 .map(() => Array(28).fill(0));
 
-// MNIST-style brush with proper fading and pixel alignment
+// MNIST-style brush 
 function drawMNISTBrush(x, y) {
 // Convert canvas coordinates to 28x28 grid coordinates
 const gridX = Math.floor(x / 10);
 const gridY = Math.floor(y / 10);
 
-// Apply MNIST-style gaussian brush pattern
 const brushPattern = [
     [0.2, 0.5, 0.2],
     [0.5, 1.0, 0.5],
@@ -90,7 +83,6 @@ for (let dy = -1; dy <= 1; dy++) {
     }
 }
 
-// Redraw canvas based on pixel data
 redrawCanvas();
 }
 
@@ -166,7 +158,7 @@ document.getElementById("latency").classList.add("hidden");
 initializeNetwork();
 });
 
-// ========== NEURAL NETWORK VISUALIZATION ==========
+// NEURAL NETWORK VISUALIZATION 
 const svg = document.getElementById("networkSvg");
 const layers = {
 input: { x: 50, neurons: 1, size: 130, cols: 1, label: "Input" },
@@ -241,7 +233,7 @@ for (let i = 0; i < from.neurons; i++) {
     const fromX = from.x + fromCol * (from.size + 15);
     const fromY = fromStartY + fromRow * (from.size + 10);
 
-    // Only draw a subset of connections to avoid clutter
+    // Only draw a subset of connections
     const step = Math.ceil(to.neurons / 3);
     for (let j = 0; j < to.neurons; j += step) {
     const toRow = Math.floor(j / to.cols);
@@ -380,7 +372,7 @@ if (layer.subLabel) {
 
 initializeNetwork();
 
-// ========== FEATURE MAP VISUALIZATION ==========
+// FEATURE MAP VISUALIZATION 
 function featureMapToDataURL(fmap) {
 const size = fmap.length;
 const canvas = document.createElement("canvas");
@@ -485,7 +477,7 @@ data.probabilities.forEach((prob, i) => {
 });
 }
 
-// ========== API INTEGRATION ==========
+// API INTEGRATION
 function canvasTo28x28() {
 // Simply return the pixel data array since we're already tracking it
 return pixelData.map((row) => [...row]);
@@ -644,7 +636,7 @@ try {
 
 predictBtn.addEventListener("click", performPrediction);
 
-// ========== LOAD DEFAULT EXAMPLE ON PAGE LOAD ==========
+// LOAD DEFAULT EXAMPLE ON PAGE LOAD 
 function drawDigit2() {
 // Pattern untuk angka 2 (28x28 pixel data)
 const digit2Pattern = [
@@ -772,7 +764,7 @@ window.addEventListener("load", async () => {
 // Draw digit 2
 drawDigit2();
 
-// Wait a bit for UI to settle, then perform prediction
+// Wait a bit
 setTimeout(async () => {
     await performPrediction();
 }, 500);
