@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>MNIST Handwriting Recognition Demo</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#137fec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+            },
+            fontFamily: {
+              display: ["arial"],
+              body: ["arial"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-x-hidden"
+  >
+    <div class="min-h-screen flex flex-col">
+      <header
+        class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#283039] bg-[#111418] px-4 md:px-10 py-3 sticky top-0 z-50"
+      >
+        <div class="flex items-center gap-4 text-white">
+          <div
+            class="size-8 flex items-center justify-center rounded bg-primary/20 text-primary"
+          >
+            <span class="material-symbols-outlined">network_node</span>
+          </div>
+          <h2
+            class="text-white text-lg font-bold leading-tight tracking-[-0.015em]"
+          >
+            MNIST Visualizer
+          </h2>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="latency" class="text-xs text-[#9dabb9] hidden"></span>
+          <button
+            class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary/10 hover:bg-primary/20 text-primary text-sm font-bold leading-normal tracking-[0.015em] transition-colors"
+          >
+            <span class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-sm">code</span>
+              <span class="truncate hidden sm:block">GitHub</span>
+            </span>
+          </button>
+        </div>
+      </header>
+
+      <main
+        class="flex-1 flex flex-col items-center py-6 px-4 md:px-8 gap-8 max-w-[1600px] mx-auto w-full"
+      >
+        <div class="w-full flex flex-col gap-2">
+          <h1
+            class="text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]"
+          >
+            Handwriting Recognition
+          </h1>
+          <p class="text-[#9dabb9] text-base font-normal">
+            Interactive Convolutional Neural Network Demo
+          </p>
+        </div>
+
+        <section
+          class="w-full bg-[#1a222c] rounded-xl p-6 border border-[#283039] overflow-hidden"
+        >
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-bold">Network Architecture</h3>
+            <span
+              id="statusBadge"
+              class="px-2 py-1 rounded bg-green-500/10 text-green-400 text-xs font-bold border border-green-500/20 flex items-center gap-1"
+            >
+              Ready
+            </span>
+          </div>
+
+          <div class="relative w-full overflow-x-auto pb-4 custom-scrollbar">
+            <svg
+              id="networkSvg"
+              class="w-full"
+              style="min-width: 1400px; height: 900px"
+            >
+              <!-- tempat neuron -->
+            </svg>
+          </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
+          <div class="lg:col-span-5 flex flex-col gap-4">
+            <div
+              class="bg-[#1a222c] border border-[#283039] rounded-xl p-6 flex flex-col items-center gap-6 shadow-sm"
+            >
+              <div class="flex flex-col items-center gap-2 w-full">
+                <h3 class="text-white text-lg font-bold">Drawing Canvas</h3>
+                <p class="text-[#9dabb9] text-sm text-center">
+                  Draw a digit (0-9) centered in the box
+                </p>
+              </div>
+              <div
+                class="relative bg-black rounded-lg overflow-hidden shadow-inner border border-gray-700"
+                style="width: 280px; height: 280px"
+              >
+                <canvas
+                  id="gridCanvas"
+                  width="280"
+                  height="280"
+                  class="absolute inset-0"
+                ></canvas>
+                <canvas
+                  id="drawCanvas"
+                  width="280"
+                  height="280"
+                  class="absolute inset-0 cursor-crosshair"
+                ></canvas>
+              </div>
+              <div class="flex items-center gap-3 w-full max-w-[280px]">
+                <button
+                  id="clearBtn"
+                  class="flex-1 h-10 rounded-lg bg-[#283039] hover:bg-[#343e4a] text-white text-sm font-bold transition-colors border border-gray-700"
+                >
+                  Clear
+                </button>
+                <button
+                  id="predictBtn"
+                  class="flex-[2] h-10 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm font-bold shadow-[0_0_15px_rgba(19,127,236,0.4)] transition-all flex items-center justify-center gap-2"
+                >
+                  <span class="material-symbols-outlined text-lg"
+                    >auto_awesome</span
+                  >
+                  Predict
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 flex flex-col gap-4">
+            <div
+              class="bg-[#1a222c] border border-[#283039] rounded-xl p-6 h-full"
+            >
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="text-white text-lg font-bold">
+                  Prediction Confidence
+                </h3>
+                <div class="flex flex-col items-end">
+                  <span class="text-xs text-[#9dabb9]">Best Match</span>
+                  <span id="bestMatch" class="text-primary font-bold text-xl"
+                    >-</span
+                  >
+                </div>
+              </div>
+              <div id="scoresContainer" class="flex flex-col gap-3">
+                <!-- Scores will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="w-full mt-4 mb-10">
+          <h2
+            class="text-white text-2xl font-bold leading-tight tracking-[-0.015em] mb-6 pl-1"
+          >
+            How it Works
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div
+              class="flex flex-col gap-4 p-5 rounded-xl bg-[#1a222c] border border-[#283039] hover:border-primary/50 transition-colors"
+            >
+              <div
+                class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500"
+              >
+                <span class="material-symbols-outlined">layers</span>
+              </div>
+              <div>
+                <h4 class="text-white font-bold text-lg mb-1">
+                  Convolutional Layers
+                </h4>
+                <p class="text-[#9dabb9] text-sm leading-relaxed">
+                  The core building block of a CNN. It applies filters to the
+                  input to create feature maps that summarize the presence of
+                  detected features in the input.
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex flex-col gap-4 p-5 rounded-xl bg-[#1a222c] border border-[#283039] hover:border-primary/50 transition-colors"
+            >
+              <div
+                class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-500"
+              >
+                <span class="material-symbols-outlined">compress</span>
+              </div>
+              <div>
+                <h4 class="text-white font-bold text-lg mb-1">Max Pooling</h4>
+                <p class="text-[#9dabb9] text-sm leading-relaxed">
+                  Reduces the spatial dimensions of the input volume for the
+                  next convolutional layer. It helps to reduce computation and
+                  controls overfitting.
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex flex-col gap-4 p-5 rounded-xl bg-[#1a222c] border border-[#283039] hover:border-primary/50 transition-colors"
+            >
+              <div
+                class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500"
+              >
+                <span class="material-symbols-outlined">grain</span>
+              </div>
+              <div>
+                <h4 class="text-white font-bold text-lg mb-1">
+                  Dense & Output
+                </h4>
+                <p class="text-[#9dabb9] text-sm leading-relaxed">
+                  After extracting features, the data is flattened and passed to
+                  fully connected layers to classify the image into one of the
+                  10 digit classes (0-9).
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,31 @@
+.layer-title {
+    font-family: inherit; 
+    font-size: 14px; 
+    font-weight: 400;
+    fill: #9dabb9; 
+    text-anchor: middle; 
+}
+.custom-scrollbar::-webkit-scrollbar {
+    height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #111418;
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #283039;
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #3b4754;
+}
+
+.neuron {
+    transition: all 0.3s ease;
+}
+
+.connection-line {
+    stroke: #374151;
+    stroke-width: 1.5;
+    opacity: 0.2;
+}
