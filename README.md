@@ -26,37 +26,7 @@ Built to demonstrate **full-stack ML engineering skills**: from model deployment
 ---
 
 ## System Architecture
-
-```
-┌─────────────────┐
-│   User Input    │
-│  (Draw Digit)   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────────────────────────┐
-│   Frontend (Vanilla JS + Canvas)   │
-│  • 280×280 drawing canvas           │
-│  • Downscale to 28×28 grayscale     │
-│  • Normalize (μ=0.1307, σ=0.3081)   │
-└────────┬────────────────────────────┘
-         │ HTTP POST
-         ▼
-┌─────────────────────────────────────┐
-│    Inference API (FastAPI)          │
-│  • TorchScript CNN model            │
-│  • Returns: predictions + features  │
-│  • Deployed on Railway              │
-└────────┬────────────────────────────┘
-         │ JSON Response
-         ▼
-┌─────────────────────────────────────┐
-│   Visualization Layer               │
-│  • Probability bars (0-9)           │
-│  • 30 feature maps (3 conv layers)  │
-│  • Network architecture diagram     │
-└─────────────────────────────────────┘
-```
+<img width="632" height="126" alt="image" src="https://github.com/user-attachments/assets/2887a05a-5c78-42bf-a51b-72e51207877a" />
 
 **Cross-Repository Architecture:**
 - **Frontend (this repo)** → User interface, visualization, preprocessing
