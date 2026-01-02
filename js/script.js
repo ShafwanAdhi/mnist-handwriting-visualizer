@@ -77,7 +77,7 @@ for (let dy = -1; dy <= 1; dy++) {
         pixelData[py][px] = Math.min(
         1.0,
         // hyperparameter
-        pixelData[py][px] + brushValue * 0.15
+        pixelData[py][px] + brushValue * 0.25
         );
     }
     }
